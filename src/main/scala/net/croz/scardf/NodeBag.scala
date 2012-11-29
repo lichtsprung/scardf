@@ -80,8 +80,6 @@ class NodeBag(val list: List[Node]) extends scala.Iterable[Node] {
 
   override def size = list.length
 
-  override def elements = list.elements
-
   def contains(n: Node) = list contains n
 
   lazy val sorted = new NodeBag(Node sort list)

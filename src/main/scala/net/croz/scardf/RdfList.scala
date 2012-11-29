@@ -5,7 +5,8 @@ import com.hp.hpl.jena.rdf.model.RDFList
 
 class RdfList(val jRdfList: RDFList, override val model: Model) extends Res(jRdfList, model)
 with scala.Seq[Node] with util.Logging {
-  def toNodeBag: NodeBag = new NodeBag(elements.toList)
+
+  def toNodeBag: NodeBag = new NodeBag(iterator.toList)
 
   def jlist: List[RDFNode] =
     scala.collection.JavaConversions.JListWrapper(jRdfList.asJavaList.asInstanceOf[java.util.List[RDFNode]]).toList
@@ -14,7 +15,7 @@ with scala.Seq[Node] with util.Logging {
 
   override def iterator: Iterator[Node] = jlist.map {
     n: RDFNode => Node(n)
-  }.elements
+  }.iterator
 
   def apply(i: Int) = Node(jRdfList.get(i))
 }
@@ -24,7 +25,7 @@ object RdfList {
 
   def from(l: RDFList): RdfList = Model(l.getModel) getRdfList l
 
-  def from(c: Collection[Any])(implicit model: Model): RdfList =
+  def from(c: Traversable[Any])(implicit model: Model): RdfList =
     apply(c.toArray: _*)(model)
 
   def apply(nodes: Any*)(implicit model: Model) = {

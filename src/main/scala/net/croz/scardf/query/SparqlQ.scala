@@ -5,6 +5,8 @@ import com.hp.hpl.jena.query.{
 QueryExecutionFactory, QueryFactory, QueryParseException, QuerySolutionMap
 }
 
+import collection.mutable.ListBuffer
+
 abstract class SparqlQ[+T <: SparqlQ[T]] extends util.Logging {
   var conditions = new StringBuffer()
   var optConditions = new StringBuffer()
@@ -218,7 +220,7 @@ class AskQ(triplets: (Any, Any, Any)*) extends SparqlQ[AskQ] {
 
 class ExtractQ(props: Prop*) extends SparqlQ[ExtractQ] {
   def from(focus: Res) = {
-    val triplets = new scala.collection.mutable.ListBuffer[(Any, Any, Any)]()
+    val triplets = ListBuffer[(Any, Any, Any)]()
     for (p <- props) triplets += Triple(focus, p, QVar())
     new ConstructQ(triplets: _*) where (triplets: _*) from focus.model
   }
@@ -228,19 +230,19 @@ class TakeQ(exprs: Any*) extends SparqlQ[TakeQ] {
   private var putModel: Model = null
 
   def to(m: Model) = {
-    putModel = m;
+    putModel = m
     this
   }
 
-  private def append(m: Model, subject: Res, predicate: Prop) = {
+  private def append(m: Model, subject: Res, predicate: Prop) {
     val objects = subject / predicate
     for (o <- objects)
       m add Stmt(subject, predicate, o)
   }
 
-  private def appendAll(m: Model, focus: Res, exprs: Collection[Any]): Unit =
+  private def appendAll(m: Model, focus: Res, exprs: Traversable[Any]){
     for (o <- exprs) o match {
-      case set: Collection[_] => appendAll(m, focus, set.toSeq)
+      case set: Traversable[_] => appendAll(m, focus, set)
       case p: Prop => append(m, focus, p)
       case pair: Pair[Prop, List[Any]] =>
         val predicate = pair._1
@@ -248,7 +250,7 @@ class TakeQ(exprs: Any*) extends SparqlQ[TakeQ] {
         for (r <- focus / predicate)
           appendAll(m, r.asRes, pair._2)
       case _ => throw new RuntimeException("Unknown TAKE expression " + o)
-    }
+    }}
 
   def from(focus: Res) = {
     log debug "From " + exprs

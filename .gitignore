@@ -1,3 +1,11 @@
+logs
+project/project
+project/target
+target
+tmp
+.history
+dist
+
 # Eclipse stuff
 /.classpath
 /.project
@@ -5,19 +13,22 @@
 
 # netbeans
 /nbproject
-/nb-configuration.*
 
 #Idea
 /*.iml
 /*.ipr
 /*.iws
 /.idea
+/.idea_modules
 
-# we use maven!
+
+# we use sbt!
 /build.xml
+/pom.xml
 
 # maven
 /target
+/src/target
 
 # vim
 .*.sw[a-p]
@@ -33,3 +44,10 @@
 
 # Log files
 /*.log
+
+# Backup files
+/*.*~
+
+# temp folders
+/data
+/tmp

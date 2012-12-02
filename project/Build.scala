@@ -13,15 +13,12 @@ object OpenplexusLogging extends Build {
     libraryDependencies += Dependency.libJenaARQ,
     libraryDependencies += Dependency.libJenaCore,
     libraryDependencies += Dependency.libLogging,
-    resolvers += Resolvers.sonatypeSnapshotRepo
+    libraryDependencies += Dependency.libSpecs2,
+    resolvers ++= Seq("snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
+      "releases"  at "http://oss.sonatype.org/content/repositories/releases")
   )
 
   lazy val root = Project(id = "root", base = file("."), settings = projectSettings)
-}
-
-
-object Resolvers {
-  val sonatypeSnapshotRepo = "Sonatype Snapshots Repository" at "https://oss.sonatype.org/content/repositories/snapshots/"
 }
 
 
@@ -30,4 +27,5 @@ object Dependency {
   val libJenaARQ = "org.apache.jena" % "jena-arq" % "2.9.4" withSources() withJavadoc()
   val libJenaCore = "org.apache.jena" % "jena-core" % "2.7.4" withSources() withJavadoc()
   val libLogging = "commons-logging" % "commons-logging-api" % "1.1"
+  val libSpecs2 = "org.specs2" %% "specs2" % "1.12.4-SNAPSHOT" % "test" withSources()
 }
